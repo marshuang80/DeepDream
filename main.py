@@ -33,7 +33,6 @@ def main(args):
 
     # load pretrained model
     vgg19 = models.vgg19(pretrained=True).features.eval()
-    #vgg19 = models.inception_v3(pretrained=True, transform_input=True).eval()
 
     model = utils.build_model(vgg19, optim_layer=args.layer, device=device)
     model = model.to(device)
