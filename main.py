@@ -25,7 +25,6 @@ def main(args):
     
     # load img
     img = plt.imread(args.input_img)
-    #img = rescale(img, 1.0/4.0)
     norm = lambda x: (x - x.min(axis=(0,1))) / (x.max(axis=(0,1)) - x.min(axis=(0,1)))
     img = norm(img)
     img = np.transpose(img, (2,0,1))
@@ -39,15 +38,11 @@ def main(args):
 
     loss_fn = utils.L2Loss()
 
-
     original_size = img.shape
-    #jitter = np.random.rand(*original_size) - 0.5 # jitter ~ Uniform(0, 1)
-    #img += jitter
-    #octave_imgs = [utils.process_tensor(img, device)]
-    #img = zoom(img, (1, 1/2, 1/2), order=3)
-
+    
     octave_imgs = [img]
-
+    
+    # Populate octave_imgs with different sized zooms of the original image
     for octave_itr in range(args.num_octave):
 
         zoom_img = zoom(octave_imgs[-1], (1, 1/args.octave_ratio, 1/args.octave_ratio), order=3)
@@ -77,7 +72,6 @@ def main(args):
             grad_smooth3 = gaussian_filter(grad, sigma=sigma*0.5)
             #grad_smooth4 = gaussian_filter(grad, sigma=sigma*3)
             grad = (grad_smooth1 + grad_smooth2 + grad_smooth3)
-            #grad = np.abs(grad).mean() * grad
             grad = torch.Tensor(grad).to(device)
 
             lr = args.lr / np.abs(grad.data.cpu().numpy()).mean()
@@ -97,23 +91,11 @@ def main(args):
         w = octave_imgs[-1].shape[3]
 
         difference = oct_img.data - ori_oct_img.data
-        logger_tb.update_image(f'difference', difference, idx)
-
-        #oct_img = Upsample(size=(h,w), mode='nearest')(oct_img)
-        #octave_imgs[-1].data += oct_img
-        #octave_imgs[-1].data = octave_imgs[-1].data /2
+        logger_tb.update_image(f'difference', difference, idx)        
+        
         difference = Upsample(size=(h,w), mode='nearest')(difference)
         octave_imgs[-1].data += (difference)
 
-        #difference = Upsample(size=(h,w), mode='nearest')(difference)
-        #input_imgs[idx] += input_img
-
-        #octave_imgs[-1].data += (difference/2)
-        #minimum = octave_imgs[-1].min()
-        #maximum = octave_imgs[-1].max()
-        #octave_imgs[-1].data  =  (octave_imgs[-1] - minimum)/(maximum - minimum)
-
-    #logger_tb.update_image(f'result', dream_img, 0)
     print("done")
 
 if __name__ == "__main__":
