@@ -29,10 +29,7 @@ def main(args):
     norm = lambda x: (x - x.min(axis=(0,1))) / (x.max(axis=(0,1)) - x.min(axis=(0,1)))
     img = norm(img)
     img = np.transpose(img, (2,0,1))
-    #img = torch.tensor(img).unsqueeze(0)
-    #img = img.type(torch.FloatTensor)
-    #img = img.to(device)
-    #img.requires_grad = True 
+    
 
     # load pretrained model
     vgg19 = models.vgg19(pretrained=True).features.eval()
