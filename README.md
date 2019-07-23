@@ -6,3 +6,5 @@
 ![](data/balloon.jpeg)  |  ![](data/deepballoon.png)  |
 
 
+# Run code
+```sh run.sh```

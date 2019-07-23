@@ -37,9 +37,9 @@ def main(args):
 
     # Populate oct_imgs with different sized zooms of the original image
     oct_imgs = [img]
-    for oct_itr in range(args.num_oct):
+    for oct_itr in range(args.num_octave):
 
-        zoom_img = zoom(oct_imgs[-1], (1, 1 / args.oct_ratio, 1 / args.oct_ratio))
+        zoom_img = zoom(oct_imgs[-1], (1, 1 / args.octave_ratio, 1 / args.octave_ratio))
         oct_imgs.append(zoom_img)
 
     oct_imgs = [utils.process_tensor(oct_img, device) for oct_img in oct_imgs]
